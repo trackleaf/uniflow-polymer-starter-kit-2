@@ -1,0 +1,61 @@
+<!--
+@license MIT
+Copyright (c) 2017 Horacio 'LostInBrittany' Gonzalez
+-->
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/uniflow-polymer/action-dispatcher.html">
+<link rel="import" href="../bower_components/uniflow-polymer/action-emitter.html">
+
+<dom-module id="my-action-dispatcher">
+    <script>
+        class MyActionDispatcher extends UniFlow.ActionEmitter(UniFlow.ActionDispatcher(Polymer.Element)) {
+            static get is() {
+                return 'my-action-dispatcher';
+            }
+
+            static get properties() {
+                return {
+                    _isReady: {
+                        type: Boolean,
+                        value: false,
+                    }
+                };
+            }
+
+            ready() {
+                this._isReady = true;
+            }
+
+            [myApp.actions.INIT_APPLICATION]() {
+                // Called after application has been initialized
+            }
+
+            [myApp.actions.BACK]() {
+                // Called when a back button has been pressed
+            }
+
+            // On route change we historise the route in state.history
+            [myApp.actions.ROUTE_CHANGED](details) {
+                // console.debug('myApp.actions.ROUTE_CHANGED', details, this.state);
+                this.push('state.history', details.pageId);
+            }
+
+            [myApp.actions.DEFAULT_USER_CHAGED](details) {
+                this.set('state.user', details.user);
+            }
+
+            [myApp.actions.CHANGE_PAGE](details) {
+                // Called when changing pages
+                console.debug('myApp.actions.CHANGE_PAGE', details, window.location);
+                var location = '/' + details.pageId;
+                // If we aren't already in location, we change the location
+                if(location != window.location.pathname) {
+                    window.history.pushState({}, null, location);
+                    // dispatch even for the app-location component
+                    window.dispatchEvent(new CustomEvent('location-changed'));
+                }
+            }
+        }
+        customElements.define(MyActionDispatcher.is, MyActionDispatcher);
+    </script>
+</dom-module>

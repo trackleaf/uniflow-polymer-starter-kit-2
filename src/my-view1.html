@@ -1,0 +1,69 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/uniflow-polymer/state-aware.html">
+<link rel="import" href="../bower_components/uniflow-polymer/action-emitter.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-view1">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+
+        padding: 10px;
+      }
+    </style>
+
+    <div class="card">
+      <div class="circle">1</div>
+      <h1>View One</h1>
+      <form>
+        Enter User ID (1 - 100) <input type="text" value="[[state.user.id]]" on-change="onUserIdChange" />
+      </form>
+      <template is="dom-if" if="[[_checkValidUser(state.user)]]">
+        <p>Event is tied to on-change of input field</p>
+        <p>The Current User ID: [[state.user.id]]</p>
+        <p>The Current User Name: [[state.user.name]]</p>
+        <p>The Current User Email: [[state.user.email]]</p>
+        <p>The Current User Username: [[state.user.username]]</p>
+      </template>
+    </div>
+  </template>
+
+  <script>
+    class MyView1 extends UniFlow.ActionEmitter(UniFlow.StateAware(Polymer.Element)) {
+      static get is() { return 'my-view1'; }
+
+      onUserIdChange(evt) {
+        // get the data from the API server
+        fetch('https://jsonplaceholder.typicode.com/users/' + evt.target.value)
+        .then((resp) => resp.json())
+        .then((data) => {
+          this.emitAction({
+            type: myApp.actions.SELECTION_CHANGED,
+            user: data
+          });
+        });
+      }
+
+      _checkValidUser(user) {
+        if (user.id) { 
+          return true;
+        }
+
+        return false;
+      }
+    }
+
+    window.customElements.define(MyView1.is, MyView1);
+  </script>
+</dom-module>
