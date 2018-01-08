@@ -1,6 +1,6 @@
 # Polymer App Toolbox - Starter Kit Copy
 
-Note: This is a copy of running the polymer-cli starter kit. It adds the google/uniflow-polymer package for uni directional data flow.
+Note: This is a copy of running the polymer-cli starter kit. It adds the google/uniflow-polymer package for uni directional data flow. To use this code just clone this repo and run "bower install" as well as "npm install"
 
 [![Build Status](https://travis-ci.org/PolymerElements/polymer-starter-kit.svg?branch=master)](https://travis-ci.org/PolymerElements/polymer-starter-kit)
 
